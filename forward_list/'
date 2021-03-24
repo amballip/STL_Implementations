@@ -1,6 +1,7 @@
 #include<memory>
 #include<iostream>
 #include<initializer_list>
+#include<algorithm>
 
 template<typename T>
 struct node
@@ -22,13 +23,10 @@ template<typename T>
 class forward_list
 {
 	private:
-
 	// head node. singly linked list starts with head
 	std::shared_ptr<node<T>> head;
 	
 	public:
-
-//********************************************Iterators****************************************************
 
 	//iterator declaration
 	struct iterator
@@ -56,102 +54,33 @@ class forward_list
 			return (this->m_data->m_value);
 		}
 
-		bool operator!=(const iterator rhs) const
+		bool operator!=(iterator rhs)
 		{
 			return !(this->m_data == rhs.m_data);
 		}
 
-		iterator& operator = (const iterator& lhs)
+		iterator& operator = (iterator& lhs)
 		{
 			this->m_data=lhs.m_data;
 			return *this;
 		}
 
-		std::shared_ptr<node<T>>& get()
+		std::shared_ptr<node<T>> get()
 		{
 			return m_data;
 		}
 
 	};
-
-	iterator begin() const
-	{
-		return iterator(head);
-	}
-
-	iterator end() const
-	{
-
-		return iterator(nullptr);
-	}
-
-
-
-	struct const_iterator
-	{
-		private:
-		std::shared_ptr<node<T>> m_data;
-
-
-		public:
-
-		//no default constructor. iterator must be initialized.
-		const_iterator(std::shared_ptr<node<T>> current):m_data(current)
-		{
-		}
-
-		//++ overload for incrementing in for loops
-		const iterator& operator++() 
-		{
-			 this->m_data = this->m_data->m_next;
-			 return *this;
-		}
-
-		const T& operator*() const
-		{
-			return (this->m_data->m_value);
-		}
-
-		bool operator!=(const iterator rhs) const
-		{
-			return !(this->m_data == rhs.m_data);
-		}
-
-		const iterator& operator = (const iterator& lhs)
-		{
-			this->m_data=lhs.m_data;
-			return *this;
-		}
-
-		const std::shared_ptr<node<T>>& get() const
-		{
-			return m_data;
-		}
-
-	};
-
-	const_iterator cbegin() const
-	{
-		return const_iterator(head);
-	}
-
-	const_iterator cend() const
-	{
-		return const_iterator(nullptr);
-	}
-	
-	
-//******************************************** Constructors ****************************************************
 
 	// default constructor
 	// forward_list<int> listA;
-
 	forward_list():head(nullptr)
 	{
 
 	}
 
-	forward_list(const forward_list& forwList)
+
+	forward_list(forward_list& forwList)
 	{
 		*this = forwList;
 
@@ -205,16 +134,13 @@ class forward_list
 			++itLhs;
 		}
 	}
-//******************************************** Destructor  **********************************************
 
 
+	
 	~forward_list()
 	{
 
 	}
-
-	
-//******************************************** Member functions  *************************************************
 
 
 	void printList()
@@ -259,20 +185,18 @@ class forward_list
 		it.get()->m_next = temp;
 	}
 
-	bool empty()
+	iterator begin()
 	{
-		return head==nullptr;
+		return iterator(head);
 	}
 
-	T& front()
+	iterator end()
 	{
-		return this->head->m_value;
+
+		return iterator(nullptr);
 	}
 
-
-//******************************************** Operator Overloads  ***********************************************
-
-	forward_list& operator=(const forward_list& rhs)
+	forward_list& operator=(forward_list& rhs)
 	{
 		this->head = std::make_shared<node<T>>();
 		this->head->m_value = rhs.head->m_value;
@@ -288,37 +212,6 @@ class forward_list
 		}
 
 		return *this;
-
-	}
-
-	bool operator==(const forward_list& lhs)
-	{
-		bool equal = true;
-		iterator rhsIt = this->head;
-		iterator lhsIt = lhs.head;
-
-		while(rhsIt!= this->end() && lhsIt!= lhs.end())
-		{
-			if(*rhsIt!=*lhsIt)
-			{
-				equal = false;
-				break;
-			}
-				
-			++rhsIt;
-			++lhsIt;
-		}
-
-		if(rhsIt!= this->end() || lhsIt!= lhs.end())
-			equal = false;
-
-		return equal;
-
-	}
-
-	bool operator!=(const forward_list& lhs)
-	{
-		return !(*this==lhs);
 
 	}
 
