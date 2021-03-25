@@ -67,7 +67,7 @@ class forward_list
 			return *this;
 		}
 
-		std::shared_ptr<node<T>>& get()
+		const std::shared_ptr<node<T>>& get() const
 		{
 			return m_data;
 		}
@@ -251,12 +251,57 @@ class forward_list
 
 	}
 
-	void insert_after(iterator& it,T elem)
+	void insert_after(const iterator& it,T elem)
 	{
 		std::shared_ptr<node<T>> temp = std::make_shared<node<T>>();
 		temp->m_value = elem;
 
+		temp->m_next = it.get()->m_next;
 		it.get()->m_next = temp;
+	}
+
+	void insert_after(const iterator& it,size_t n,T elem)
+	{
+		while(n--)
+		{
+			insert_after(it,elem);
+			++it;
+		}
+	}
+
+	void insert_after(const iterator& it, const iterator& start, const iterator& end)
+	{
+		iterator m_start = start;
+		iterator m_end = end;
+
+		while(m_start!=m_end)
+		{
+			insert_after(it,m_start.get()->m_value);
+			++m_start;
+		}
+		
+	}
+
+	void assign(size_t count,T elem)
+	{
+		*this = forward_list(count,elem);
+	}
+
+	void assign(const iterator& begin,const iterator& end)
+	{
+		*this = forward_list(begin,end);
+	}
+
+	void assign(const std::initializer_list<T> initList)
+	{
+		*this  = forward_list(initList);
+	}
+
+	void swap(forward_list<T>& forwList)
+	{
+		std::shared_ptr<node<T>> temp = this->head;
+		this->head = forwList.head;
+		forwList.head = temp;
 	}
 
 	bool empty()
@@ -267,6 +312,21 @@ class forward_list
 	T& front()
 	{
 		return this->head->m_value;
+	}
+
+	void pop_front()
+	{
+		head= head->m_next;
+	}
+
+	void clear()
+	{
+		head = nullptr;
+	}
+
+	void erase_after(const iterator it)
+	{
+		it.get()->m_next = it.get()->m_next->m_next;
 	}
 
 
@@ -289,6 +349,12 @@ class forward_list
 
 		return *this;
 
+	}
+
+	forward_list& operator=(std::initializer_list<T> initList)
+	{
+		*this =  forward_list<T>(initList);
+		return *this;
 	}
 
 	bool operator==(const forward_list& lhs)
