@@ -33,12 +33,16 @@ class forward_list
 
 	//private functions - for internal use only
 
-	void createHead(T& value)
+	void createHead(const T& value)
 	{
+		createBeforeHead();
 		head= std::make_shared<node<T>>();
 		head->m_value = value;
-//		beforeHead = std::make_shared<node<T>>();
 		beforeHead->m_next = head;
+	}
+	void createBeforeHead()
+	{
+		beforeHead = std::make_shared<node<T>>();
 	}
 	
 	public:
@@ -73,9 +77,7 @@ class forward_list
 
 		const T& operator*() const
 		{
-			return (this->m_data->m_value);
-		}
-
+			return (this->m_data->m_value); } 
 		bool operator!=(const iterator rhs) const
 		{
 			return !(this->m_data == rhs.m_data);
@@ -92,7 +94,7 @@ class forward_list
 			return *this;
 		}
 
-		const std::shared_ptr<node<T>>& get() const
+		const std::shared_ptr<node<T>>& get() const 
 		{
 			return m_data;
 		}
@@ -183,7 +185,7 @@ class forward_list
 
 	forward_list():head(nullptr)
 	{
-		beforeHead = std::make_shared<node<T>>();
+		createBeforeHead();
 
 	}
 
@@ -207,10 +209,10 @@ class forward_list
 	}
 
 
-	forward_list(std::initializer_list<T> initList)
+	forward_list(const std::initializer_list<T>& initList)
 	{
 		typename std::initializer_list<T>::iterator it= initList.begin();
-		creteHead(*it);
+		createHead(*it);
 		++it;
 		iterator thisIt = iterator(head);
 
@@ -292,9 +294,17 @@ class forward_list
 
 	void insert_after(const iterator& it,T elem)
 	{
-		if(it==iterator(beforeHead))
+		if(it==iterator(beforeHead) && head==nullptr)
 		{
 			createHead(elem);
+		}
+		else if(it==iterator(beforeHead) && head!=nullptr)
+		{
+			std::shared_ptr<node<T>> temp = std::make_shared<node<T>>();
+			temp->m_value = elem;
+
+			temp->m_next = head->m_next;
+			head = temp;
 		}
 		else
 		{
@@ -348,6 +358,13 @@ class forward_list
 		std::shared_ptr<node<T>> temp = this->head;
 		this->head = forwList.head;
 		forwList.head = temp;
+	}
+
+	void splice_after(iterator current,const forward_list<T> forwList,iterator begin,iterator end)
+	{
+		std::shared_ptr<node<T>> temp = current.get()->m_next;
+		current.get()->m_next = begin.get();
+		end.get()->m_next = temp;
 	}
 
 	bool empty()
