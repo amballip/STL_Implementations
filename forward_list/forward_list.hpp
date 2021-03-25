@@ -2,6 +2,7 @@
 #include<iostream>
 #include<initializer_list>
 
+
 template<typename T>
 struct node
 {
@@ -18,13 +19,27 @@ struct node
 
 };
 
+
 template<typename T>
 class forward_list
 {
 	private:
 
+	protected:
+
 	// head node. singly linked list starts with head
 	std::shared_ptr<node<T>> head;
+	std::shared_ptr<node<T>> beforeHead;
+
+	//private functions - for internal use only
+
+	void createHead(T& value)
+	{
+		head= std::make_shared<node<T>>();
+		head->m_value = value;
+//		beforeHead = std::make_shared<node<T>>();
+		beforeHead->m_next = head;
+	}
 	
 	public:
 
@@ -56,9 +71,19 @@ class forward_list
 			return (this->m_data->m_value);
 		}
 
+		const T& operator*() const
+		{
+			return (this->m_data->m_value);
+		}
+
 		bool operator!=(const iterator rhs) const
 		{
 			return !(this->m_data == rhs.m_data);
+		}
+
+		bool operator==(const iterator rhs) const
+		{
+			return this->m_data == rhs.m_data;
 		}
 
 		iterator& operator = (const iterator& lhs)
@@ -83,6 +108,11 @@ class forward_list
 	{
 
 		return iterator(nullptr);
+	}
+
+	iterator before_begin()
+	{
+		return iterator(beforeHead);
 	}
 
 
@@ -139,6 +169,11 @@ class forward_list
 	{
 		return const_iterator(nullptr);
 	}
+
+	const_iterator cbefore_begin()
+	{
+		return const_iterator(beforeHead);
+	}
 	
 	
 //******************************************** Constructors ****************************************************
@@ -148,6 +183,7 @@ class forward_list
 
 	forward_list():head(nullptr)
 	{
+		beforeHead = std::make_shared<node<T>>();
 
 	}
 
@@ -159,8 +195,7 @@ class forward_list
 
 	forward_list(size_t count,T elem = T())
 	{
-		head = std::make_shared<node<T>>();
-		head->m_value = elem;
+		createHead(elem);
 		iterator it = begin();
 		--count;
 		while(count--)
@@ -174,9 +209,8 @@ class forward_list
 
 	forward_list(std::initializer_list<T> initList)
 	{
-		head = std::make_shared<node<T>>();
 		typename std::initializer_list<T>::iterator it= initList.begin();
-		head->m_value = *it;
+		creteHead(*it);
 		++it;
 		iterator thisIt = iterator(head);
 
@@ -192,9 +226,7 @@ class forward_list
 
 	forward_list(iterator& itA,iterator& itB)
 	{
-		head = std::make_shared<node<T>>();
-		head->m_value = *itA;
-
+		createHead(*itA);
 		iterator itRhs(this->head);
 		iterator itLhs = itA.get()->m_next;
 		
@@ -219,17 +251,25 @@ class forward_list
 
 	void printList()
 	{
-		std::shared_ptr<node<T>> temp = head;
-
-		while(temp->m_next!=nullptr)
+		if(head==nullptr)
 		{
-			std::cout<<temp->m_value<<"->";
-			temp=temp->m_next;
+			std::cout<<"list is empty"<<std::endl;
 		}
+		else
+		{
 
-		std::cout<<temp->m_value;
+			std::shared_ptr<node<T>> temp = head;
 
-		std::cout<<std::endl;
+			while(temp->m_next!=nullptr)
+			{
+				std::cout<<temp->m_value<<"->";
+				temp=temp->m_next;
+			}
+
+			std::cout<<temp->m_value;
+
+			std::cout<<std::endl;
+		}
 
 	}
 
@@ -237,8 +277,7 @@ class forward_list
 	{
 		if(head==nullptr)
 		{
-			head = std::make_shared<node<T>>();
-			head->m_value = value;
+			createHead(value);
 		}
 		else
 		{
@@ -253,11 +292,18 @@ class forward_list
 
 	void insert_after(const iterator& it,T elem)
 	{
-		std::shared_ptr<node<T>> temp = std::make_shared<node<T>>();
-		temp->m_value = elem;
+		if(it==iterator(beforeHead))
+		{
+			createHead(elem);
+		}
+		else
+		{
+			std::shared_ptr<node<T>> temp = std::make_shared<node<T>>();
+			temp->m_value = elem;
 
-		temp->m_next = it.get()->m_next;
-		it.get()->m_next = temp;
+			temp->m_next = it.get()->m_next;
+			it.get()->m_next = temp;
+		}
 	}
 
 	void insert_after(const iterator& it,size_t n,T elem)
@@ -334,8 +380,7 @@ class forward_list
 
 	forward_list& operator=(const forward_list& rhs)
 	{
-		this->head = std::make_shared<node<T>>();
-		this->head->m_value = rhs.head->m_value;
+		this->createHead(rhs.head->m_value);
 
 		iterator lhsIt(this->head);
 		iterator rhsIt(rhs.head->m_next);
