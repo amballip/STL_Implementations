@@ -226,7 +226,7 @@ class forward_list
 
 	}
 
-	forward_list(iterator& itA,iterator& itB)
+	forward_list(const iterator& itA,const iterator& itB)
 	{
 		createHead(*itA);
 		iterator itRhs(this->head);
@@ -303,7 +303,7 @@ class forward_list
 			std::shared_ptr<node<T>> temp = std::make_shared<node<T>>();
 			temp->m_value = elem;
 
-			temp->m_next = head->m_next;
+			temp->m_next = head;
 			head = temp;
 		}
 		else
@@ -318,22 +318,25 @@ class forward_list
 
 	void insert_after(const iterator& it,size_t n,T elem)
 	{
+		forward_list<int>::iterator m_it = it;
 		while(n--)
 		{
 			insert_after(it,elem);
-			++it;
+			++m_it;
 		}
 	}
 
 	void insert_after(const iterator& it, const iterator& start, const iterator& end)
 	{
+		iterator m_current = it;
 		iterator m_start = start;
 		iterator m_end = end;
 
 		while(m_start!=m_end)
 		{
-			insert_after(it,m_start.get()->m_value);
+			insert_after(m_current,m_start.get()->m_value);
 			++m_start;
+			++m_current;
 		}
 		
 	}
@@ -360,12 +363,66 @@ class forward_list
 		forwList.head = temp;
 	}
 
-	void splice_after(iterator current,const forward_list<T> forwList,iterator begin,iterator end)
+	void splice_after(iterator current,
+					  forward_list<T>& forwList,
+					  iterator begin,
+					  iterator end)
 	{
-		std::shared_ptr<node<T>> temp = current.get()->m_next;
-		current.get()->m_next = begin.get();
-		end.get()->m_next = temp;
+		if(begin==end || begin.get()->m_next == end.get())
+		{
+			return;
+		}
+		else 
+		{
+			if(current==this->before_begin())
+				this->head = begin.get()->m_next;
+			if(begin==forwList.before_begin())
+				forwList.head = end.get();
+	
+			iterator it =begin;
+
+			while(it.get()->m_next!=end.get())
+			{
+				++it;
+			}
+
+			std::shared_ptr<node<T>> temp = current.get()->m_next;
+			current.get()->m_next = begin.get()->m_next;
+			begin.get()->m_next=end.get();
+			it.get()->m_next = temp;
+		}	
 	}
+
+	void splice_after(iterator current,forward_list<int>& forwList)
+	{
+		splice_after(current,forwList,forwList.before_begin(),forwList.end());
+	}
+
+	void merge()
+	{
+	}
+
+	void reverse()
+	{
+		std::shared_ptr<node<T>> prev = this->before_begin().get();
+		std::shared_ptr<node<T>> current = prev->m_next;
+		std::shared_ptr<node<T>> next  = current->m_next;
+
+		while(next!=this->end().get())
+		{
+			current->m_next = next->m_next;
+			next->m_next= prev->m_next;
+			prev->m_next = next;
+
+			next = current->m_next;
+		}
+
+		head = prev->m_next;
+		current->m_next = nullptr;
+		beforeHead->m_next = head;
+
+	}
+
 
 	bool empty()
 	{
@@ -389,7 +446,16 @@ class forward_list
 
 	void erase_after(const iterator it)
 	{
-		it.get()->m_next = it.get()->m_next->m_next;
+		if(it==iterator(beforeHead))
+		{
+			head = head->m_next;
+			beforeHead->m_next = head;
+
+		}
+		else
+		{
+			it.get()->m_next = it.get()->m_next->m_next;
+		}
 	}
 
 
