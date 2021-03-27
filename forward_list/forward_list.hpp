@@ -26,12 +26,9 @@ class forward_list
 	private:
 
 	protected:
-
-	// head node. singly linked list starts with head
 	std::shared_ptr<node<T>> head;
 	std::shared_ptr<node<T>> beforeHead;
 
-	//private functions - for internal use only
 
 	void createHead(const T& value)
 	{
@@ -47,9 +44,8 @@ class forward_list
 	
 	public:
 
-//********************************************Iterators****************************************************
+//******************************************** Iterators ****************************************************
 
-	//iterator declaration
 	struct iterator
 	{
 		private:
@@ -58,12 +54,10 @@ class forward_list
 
 		public:
 
-		//no default constructor. iterator must be initialized.
 		iterator(std::shared_ptr<node<T>> current):m_data(current)
 		{
 		}
 
-		//++ overload for incrementing in for loops
 		iterator operator++()
 		{
 			 this->m_data = this->m_data->m_next;
@@ -127,12 +121,10 @@ class forward_list
 
 		public:
 
-		//no default constructor. iterator must be initialized.
 		const_iterator(std::shared_ptr<node<T>> current):m_data(current)
 		{
 		}
 
-		//++ overload for incrementing in for loops
 		const iterator& operator++() 
 		{
 			 this->m_data = this->m_data->m_next;
@@ -180,8 +172,6 @@ class forward_list
 	
 //******************************************** Constructors ****************************************************
 
-	// default constructor
-	// forward_list<int> listA;
 
 	forward_list():head(nullptr)
 	{
@@ -398,8 +388,72 @@ class forward_list
 		splice_after(current,forwList,forwList.before_begin(),forwList.end());
 	}
 
-	void merge()
+	void splice_after(iterator current,forward_list<int>& forwList,iterator end)
 	{
+		iterator it = forwList.before_begin();
+		iterator itNext = it.get()->m_next;
+
+		if(it ==end || it==forwList.begin())
+		{
+			return;
+		}
+		else
+		{
+			while(itNext.get()->m_next!=end.get())
+			{
+				++it;
+				++itNext;
+			}
+
+			this->splice_after(current,forwList,it,end);
+		}
+
+	}
+
+	void merge(forward_list<T>& forwList)
+	{
+		iterator curr= this->begin();
+		iterator prev= this->before_begin();
+
+		while(curr!=this->end() && !forwList.empty())
+		{
+			if(*curr <= forwList.head->m_value)
+			{
+				splice_after(curr,forwList,forwList.head->m_next);
+				++curr;
+				if(curr.get()->m_next!=this->end().get())
+				{
+					++curr;
+				}
+				else
+				{
+					break;
+				}
+				prev.get()->m_next = curr.get();
+				
+			}
+			else
+			{
+				splice_after(prev,forwList,forwList.head->m_next);
+				if(curr.get()->m_next!=this->end().get())
+				{
+					++curr;
+				}
+				else
+				{
+					break;
+				}
+				prev.get()->m_next = curr.get();
+			}
+			
+		}
+
+		while(forwList.head!=nullptr)
+		{
+			splice_after(curr,forwList,forwList.head->m_next);
+			++curr;
+		}
+
 	}
 
 	void reverse()
