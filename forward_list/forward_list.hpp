@@ -29,7 +29,10 @@ class forward_list
 	std::shared_ptr<node<T>> head;
 	std::shared_ptr<node<T>> beforeHead;
 
-
+	void print(std::string message)
+	{
+		std::cout<<message<<std::endl;
+	}
 	void createHead(const T& value)
 	{
 		createBeforeHead();
@@ -181,7 +184,17 @@ class forward_list
 
 	forward_list(const forward_list& forwList)
 	{
-		*this = forwList;
+		createHead(forwList.head->m_value);
+
+		iterator lhsIt(head);
+		iterator rhsIt(forwList.head->m_next);
+
+		while(rhsIt!=forwList.end())
+		{
+			insert_after(lhsIt,rhsIt.get()->m_value);
+			++lhsIt;
+			++rhsIt;
+		}
 
 	}
 
@@ -199,7 +212,7 @@ class forward_list
 	}
 
 
-	forward_list(const std::initializer_list<T>& initList)
+	explicit forward_list(const std::initializer_list<T>& initList)
 	{
 		typename std::initializer_list<T>::iterator it= initList.begin();
 		createHead(*it);
@@ -517,17 +530,9 @@ class forward_list
 
 	forward_list& operator=(const forward_list& rhs)
 	{
-		this->createHead(rhs.head->m_value);
-
-		iterator lhsIt(this->head);
-		iterator rhsIt(rhs.head->m_next);
-
-		while(rhsIt!=rhs.end())
-		{
-			this->insert_after(lhsIt,rhsIt.get()->m_value);
-			++lhsIt;
-			++rhsIt;
-		}
+		forward_list<T> f(rhs);
+		
+		this->head = f.head;
 
 		return *this;
 
