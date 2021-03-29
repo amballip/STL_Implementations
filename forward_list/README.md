@@ -281,3 +281,56 @@ No support for
 		intList.assign({4,5,6});
 		//intList has now {4,5,6};
 		```
+14. `void splice_after(iterator pos,forward_list<T>& forwList,iterator start,iterator end)
+    * Parameters: intList - pos - after which elements in range (start,end) will be added
+    * Return value: None
+    * Complexity: linear - based on distance between [start,end)
+    * Note: elements within range (start,end) will be delinked from forwList and lined to calling forward_list after iterator pos
+    * examples
+		
+		```c++
+		forward_list<int> intList = {1,2,3,4,5};
+		forward_list<int>::iterator start intList.begin(),end = intList.intList.begin();
+		++end;
+		++end;
+		++end; // end will point to element with value 4
+
+		forwardList<int> other;
+		other.splice_after(other.before_begin, intList,start,end);
+		// other has {2,3}
+		// intList has {1,4,5}
+		```
+15. `void splice_after(iterator pos,forward_list<int>& forwList)`
+    * Parameters: pos after which elements to be joined. forwList - from which elements will be removed
+    * Return value: None
+    * Complexity: linear - based on size of forwList
+    * Note: relinks all the elements form forwList and joins the after pos in calling forward_list
+    * examples
+		
+		```c++
+		forward_list<int> intList = {1,2,3,4,5};
+		forwardList<int> other;
+		other.splice_after(other.before_begin, intList);
+		// other has {1,2,3,4,5}
+		// intList is empty list
+		```
+16. `void splice_after(iterator pos,forward_list<int>& forwList,iterator end)`
+
+    * Parameters: intList - pos after which elements to be joined,forwList - forward_list from which element just before end will be removed
+    * Return value: None
+    * Complexity: linear - based on the size of forwList
+    * Note: relinks the element just before end and joins it with calling forward_list after pos
+    * examples
+		
+		```c++
+		forward_list<int> intList = {1,2,3,4,5};
+		forward_list<int>::iterator end = intList.intList.begin();
+		++end;
+		++end;
+		++end; // end will point to element with value 4
+
+		forwardList<int> other;
+		other.splice_after(other.before_begin, intList,end);
+		// other has {3}
+		// intList has {1,2,4,5}
+		```
