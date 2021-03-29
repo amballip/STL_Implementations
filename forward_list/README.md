@@ -190,11 +190,52 @@ No support for
 		// other has now {1,2,3};
 		```
 	
+8. `void insert_after(const iterator& pos,size_t n,const T& value)`
+    * Parameters:iterator after which element needs to be added and value to add 
+    * Return value: None
+    * Complexity: constant
+    * Note: adds the value element after the positiion the pos points to . copies the elment.
+    * examples
+		
+		```c++
+		forward_list<int> intList  = {1,2,3,4,5};
+		forward_list<int>::iterator it = intList.begin();
+		++it;
+		++it;
+		//it points to 3;
+		intList.insert_after(it,8);
+		//intList has now {1,2,3,8,4,5};
+		```
 
+9. `void insert_after(const iterator& pos, const iterator& start, const iterator& end)`
+    * Parameters: pos- iterator after which elements will be added fron range [start,end)
+    * Return value: None
+    * Complexity: linear - based on the distance between start and end
+    * Note: inserts elements between [start,end) after pos. copies the elements
+    * examples
+		
+		```c++
+		forward_list<int> intList  = {1,2,3,4,5};
+		forward_list<int>::iterator pos = intList.begin();
+		//pos points to element with value 1
+		forward_list<int>::iterator start = intList.begin();
+		++start;
+		++start;
+		//it points to 3;
+		intList.insert_after(it,start,intList.end());
+		//intList has now {1,3,4,5,2,3,4,5};
+		```
 
-
-
-
-
-
+10. `void insert_after(const iterator pos,std::initializer_list<T> initList)`
+    * Parameters: intList - initializer list
+    * Return value: None
+    * Complexity: linear - based on the size of the initializer list
+    * Note: creates new elements after pos based on the elements in initializer list
+    * examples
+		
+		```c++
+		forward_list<int> intList = {1,2,3};
+		intList.insert_after(intList.begin,{5,6,7});
+		intList has now {1,5,6,7,2,3};
+		```
 
