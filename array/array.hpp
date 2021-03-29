@@ -1,5 +1,5 @@
 #include<initializer_list>
-
+#include<cstddef>
 template <typename T , size_t _size>
 class array
 {
@@ -89,6 +89,51 @@ class array
 		return arr[index];
 	}
 
+	//iterator functions
+
+	iterator begin()
+	{
+		return iterator(&arr[0]);
+	}
+
+	iterator end()
+	{
+		return iterator(&arr[_size]);
+	}
+
+	reverse_iterator rbegin()
+	{
+		return reverse_iterator(arr[_size-1]);
+	}
+
+	reverse_iterator rend()
+	{
+		return reverse_iterator(arr[-1]);
+
+	}
+
+	const_iterator cbegin()
+	{
+		return const_iterator(arr[0]);
+	}
+
+	const_iterator cend()
+	{
+		return const_iterator(arr[_size]);
+	}
+
+	const_reverse_iterator crbegin()
+	{
+		return const_reverse_iterator(arr[size-1]);
+	}
+	
+	const_reverse_iterator crend()
+	{
+		return const_reverse_iterator(arr[-1]);
+	}
+
+	//iterator implementations
+
 	struct iterator
 	{
 
@@ -142,17 +187,163 @@ class array
 
 	};
 
-	iterator begin()
+	struct const_iterator
 	{
-		return iterator(&arr[0]);
-	}
 
-	iterator end()
+		iterator(T* ptr = nullptr):m_ptr(ptr)
+		{
+
+		}
+
+		T& operator*() const
+		{
+			return *m_ptr;
+		}
+
+		T& operator->()
+		{
+			return  m_ptr;
+		}
+
+		iterator& operator++()
+		{
+			m_ptr++;
+			return *this;
+		}
+
+		iterator operator++(int)
+		{
+			iterator temp = *this;
+			++(*this);
+			return temp;
+		}
+
+		iterator operator+(size_t offset)
+		{
+			return iterator(m_ptr+offset);
+		}
+
+		bool operator==(const iterator& a)
+		{
+			return this->m_ptr == a.m_ptr;
+		}
+
+		bool operator != (const iterator& a)
+		{
+			return this->m_ptr != a.m_ptr;
+		}
+
+
+
+		private:
+			T* m_ptr;
+
+	};
+	struct reverse_iterator
 	{
-		return iterator(&arr[_size]);
-	}
+
+		iterator(T* ptr = nullptr):m_ptr(ptr)
+		{
+
+		}
+
+		T& operator*() const
+		{
+			return *m_ptr;
+		}
+
+		T& operator->()
+		{
+			return  m_ptr;
+		}
+
+		iterator& operator++()
+		{
+			m_ptr++;
+			return *this;
+		}
+
+		iterator operator++(int)
+		{
+			iterator temp = *this;
+			++(*this);
+			return temp;
+		}
+
+		iterator operator+(size_t offset)
+		{
+			return iterator(m_ptr+offset);
+		}
+
+		bool operator==(const iterator& a)
+		{
+			return this->m_ptr == a.m_ptr;
+		}
+
+		bool operator != (const iterator& a)
+		{
+			return this->m_ptr != a.m_ptr;
+		}
 
 
+
+		private:
+			T* m_ptr;
+
+	};
+
+	struct const_reverse_iterator
+	{
+
+		iterator(T* ptr = nullptr):m_ptr(ptr)
+		{
+
+		}
+
+		T& operator*() const
+		{
+			return *m_ptr;
+		}
+
+		T& operator->()
+		{
+			return  m_ptr;
+		}
+
+		iterator& operator++()
+		{
+			m_ptr++;
+			return *this;
+		}
+
+		iterator operator++(int)
+		{
+			iterator temp = *this;
+			++(*this);
+			return temp;
+		}
+
+		iterator operator+(size_t offset)
+		{
+			return iterator(m_ptr+offset);
+		}
+
+		bool operator==(const iterator& a)
+		{
+			return this->m_ptr == a.m_ptr;
+		}
+
+		bool operator != (const iterator& a)
+		{
+			return this->m_ptr != a.m_ptr;
+		}
+
+
+
+		private:
+			T* m_ptr;
+
+	};
 
 
 };
