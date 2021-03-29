@@ -134,6 +134,67 @@ No support for
 		//intList has {1,2,3,4,5,6,7,8,9}
 		// other.empty() returs true
 		```
+4. `void reverse()
+    * Parameters: None
+    * Return value: None
+    * Complexity: linear
+    * Note: reverses the forward_list. only pointers are changed. Actual data is untouched.
+    * examples
+
+		```c++
+		forward_list<int> intList = {1,2,3,4,5};
+		intList.reverse();
+		//intList has now {5,4,3,2,1};
+
+5. `bool empty() const`
+    * Parameters: None
+    * Return value: bool
+    * Complexity: constant
+    * Note: returns if the forward_list is empty
+    * examples
+
+		```c++
+		forward_list<int> emptyList;
+		emptyList.empty(); // returns true
+		forward_list<int> intList = {1,2,3};
+		intList.emtpty(); // return false;
+		```
+
+6. `T& front();`
+
+	`const T& front() const;`
+    * Parameters: None
+    * Return value: value of the first element. 
+    * Complexity: constant
+    * Note: returns value of the first element. read and write.
+    * examples
+
+		```c++
+		forward_list<int> intList= {1,2};
+		int b = intList.front(); // read
+		intList.front() = 3;
+		// intList has now {3,2};
+		```
+7. `void swap(forward_list<T>& forwList);`
+    * Parameters: forward_list which needs to be swaped with
+    * Return value: None
+    * Complexity: constant
+    * Note: swaps current foward_list with forwList. just changing pointers so complexity is constant
+    * examples
+		
+		```c++
+		forward_list<int> intList = {1,2,3};
+		forward_list<int> other = {7,8,9};
+		intList.swap(other);
+		// intList has now {7,8,9};
+		// other has now {1,2,3};
+		```
+	
+
+
+
+
+
 
 
 
