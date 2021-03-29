@@ -21,8 +21,10 @@ This is a simpler implementation of standard STL container `std::forward_list`
     * examples
 
 	  ```c++
+	  forward_list<int> otherList = {1,2,3,4,5};
       forward_list<int> intList(otherList);	
       forward_list<int> intList = otherList;
+	  // can be called with empty lists
 	  ```
 
 
@@ -52,7 +54,7 @@ This is a simpler implementation of standard STL container `std::forward_list`
 		//intList has {"","","","",""}
 		```
 
-5. `forward_list(const std::initializer_list<T>& initList)
+5. `forward_list(const std::initializer_list<T>& initList);`
     * Parameters: initializer list containing elements of type T
     * Return value: None
     * Complexity: linear based on the size of initializer list
@@ -61,7 +63,9 @@ This is a simpler implementation of standard STL container `std::forward_list`
 	
 		```c++
 		forward_list<int> intList({1,2,3,4,5});
+		forward_list<int> intList({}); // empty initializer list
 		forward_list<int> intList = {1,2,3,4,5};
+		forward_list<int> intList = {};
 		```
 
 6. `forward_list(const iterator& start,const iterator& end)`
