@@ -1,7 +1,7 @@
 #include<memory>
 #include<iostream>
 #include<initializer_list>
-
+// to print name of the function use print(__PRETTY_FUNCTION__);
 
 template<typename T>
 struct node
@@ -15,7 +15,6 @@ struct node
 
 	~node()
 	{
-		std::cout<<"destroyed"<<std::endl;
 	}
 
 };
@@ -99,7 +98,7 @@ class forward_list
 
 	};
 
-	iterator begin() const
+	iterator begin()
 	{
 		return iterator(head);
 	}
@@ -114,9 +113,6 @@ class forward_list
 	{
 		return iterator(beforeHead);
 	}
-
-
-
 
 
 	struct const_iterator
@@ -175,12 +171,12 @@ class forward_list
 		return const_iterator(beforeHead);
 	}
 
-	const_iterator before_begin()
+	const_iterator before_begin() 
 	{
 
 	}
 
-	const_iterator begin()
+	const_iterator begin() const
 	{
 
 	}
@@ -197,63 +193,84 @@ class forward_list
 	forward_list():head(nullptr)
 	{
 		createBeforeHead();
-
 	}
 
 	forward_list(const forward_list& forwList)
 	{
-		createHead(forwList.head->m_value);
-
-		iterator lhsIt(head);
-		iterator rhsIt(forwList.head->m_next);
-
-		while(rhsIt!=forwList.end())
+		if(forwList.empty())
 		{
-			insert_after(lhsIt,rhsIt.get()->m_value);
-			++lhsIt;
-			++rhsIt;
+			createBeforeHead();
 		}
+		else
+		{
+			createHead(forwList.head->m_value);
 
+			iterator lhsIt(head);
+			iterator rhsIt(forwList.head->m_next);
+
+			while(rhsIt!=forwList.end())
+			{
+				insert_after(lhsIt,rhsIt.get()->m_value);
+				++lhsIt;
+				++rhsIt;
+			}
+		}
 	}
 
-	forward_list(size_t count,const T& elem = T())
+	forward_list(size_t count,const T& value)
 	{
-		createHead(elem);
+		createHead(value);
 		iterator it = begin();
 		--count;
 		while(count--)
 		{
-			insert_after(it,elem);
+			insert_after(it,value);
 			++it;
 		}
 
+	}
+
+	explicit forward_list(size_t count)
+	{
+		createHead(T());
+		iterator it = begin();
+		while(count--)
+		{
+			insert_after(it,T());
+		}
 	}
 
 
 	forward_list(const std::initializer_list<T>& initList)
 	{
-		typename std::initializer_list<T>::iterator it= initList.begin();
-		createHead(*it);
-		++it;
-		iterator thisIt = iterator(head);
-
-		while(it!=initList.end())
+		if(initList.size()==0)
 		{
-			insert_after(thisIt,*it);
-			++it;
-			++thisIt;
+			createBeforeHead();
 		}
+		else
+		{
 
+			typename std::initializer_list<T>::iterator it= initList.begin();
+			createHead(*it);
+			++it;
+			iterator thisIt = iterator(head);
 
+			while(it!=initList.end())
+			{
+				insert_after(thisIt,*it);
+				++it;
+				++thisIt;
+			}
+		}
 	}
 
-	forward_list(const iterator& itA,const iterator& itB)
+	forward_list(const iterator& start,const iterator& end)
 	{
-		createHead(*itA);
+		createHead(*start);
 		iterator itRhs(this->head);
-		iterator itLhs = itA.get()->m_next;
+		iterator itLhs = start.get()->m_next;
 		
-		while(itLhs!=itB)
+		while(itLhs!=end)
 		{
 			this->insert_after(itRhs,itLhs.get()->m_value);
 			++itRhs;
