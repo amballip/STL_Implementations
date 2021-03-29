@@ -238,4 +238,46 @@ No support for
 		intList.insert_after(intList.begin,{5,6,7});
 		intList has now {1,5,6,7,2,3};
 		```
+11. `void assign(size_t count,const T& value)`
+    * Parameters: count - no of elements to be added, value  - of what value
+    * Return value: None
+    * Complexity: linear  - based on the count
+    * Note: replaces the current forward_list with count copeis of value
+    * examples
+		
+		```c++
+		forward_list<int> intList = {1,2,3,5};
+		intList.assign(2,3);
+		//intList has now {3,3};
 
+		forward_list<int> intList;
+		intList.assign(2,3);
+		//intList has now {3,3};
+		```
+
+12. `void assign(iterator start, iterator end)`
+    * Parameters: range  - iterators start and end
+    * Return value: None
+    * Complexity: linear - based on the distance between start and end
+    * Note: replaces the current list with range [start,end)
+    * examples
+		
+		```c++
+		forward_list<int> intList = {1,2,3};
+		forward_list<int> other = {4,5,6};
+		intList.assign(intList.begin(),intList.end());
+		//intList has now {4,5,6};
+		```
+
+13. `void assign(std::initializer_list<T> initList)`
+    * Parameters: intList - initializer list
+    * Return value: None
+    * Complexity: linear - based on the size of the initializer list
+    * Note: creates new elements after pos based on the elements in initializer list
+    * examples
+		
+		```c++
+		forward_list<int> intList = {1,2,3};
+		intList.assign({4,5,6});
+		//intList has now {4,5,6};
+		```
