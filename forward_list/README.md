@@ -1,5 +1,11 @@
 This is a simpler implementation of standard STL container `std::forward_list`
 
+No support for 
+
+1. Move constructors or move semantics
+2. Allocators
+3. Iterators currently cant work with std::algorithm
+
 ### Constructors
 
 1. `forward_list();`
@@ -85,8 +91,49 @@ This is a simpler implementation of standard STL container `std::forward_list`
 		//intListOther has {1,2,3};
 		```
 
+### Member functions
 
+1. `void push_front(const T& value);`
+    * Parameters: value of type T
+    * Return value: None
+    * Complexity: constant
+    * Note: addes existing value to the start of the list. No new elements are created
+    * examples
 
+		```c++
+		forward_list<int> intList;
+		intList.push_front(10);
+		intList.push_front(9);
+		intList.push_front(8);
+		// initList has now {8,9,10}
+		```
+2. `void pop_front();`
+    * Parameters: None
+    * Return value: None
+    * Complexity: constant
+    * Note: removes first element from forward_list
+    * examples
+
+		```c++
+		forward_list<int> intList = {1,2,3};
+		intList.pop_front();
+		//intList has now {2,3}
+		```
+
+3. `void merge(forward_list<T>& forwList);`
+    * Parameters: forward list to be merged
+    * Return value: None
+    * Complexity: linear
+    * Note: merges two sorted list. parameter forwList will be empty after merge. only pointers are moved.
+    * examples
+
+		```c++
+		forward_list<int> intList = {1,3,5,7,9};
+		forward_list<int> other = {2,4,6,8};
+		intList.merge(other);
+		//intList has {1,2,3,4,5,6,7,8,9}
+		// other.empty() returs true
+		```
 
 
 
