@@ -334,3 +334,29 @@ No support for
 		// other has {3}
 		// intList has {1,2,4,5}
 		```
+
+17. `void clear()`
+    * Parameters: None
+    * Return value: None
+    * Complexity: linear - linear  - memory of the all the elements should be freed.
+    * Note: free the underlying memory
+    * examples
+		
+		```c++
+		forward_list<int> intList = {1,2,3,4,5};
+		intList.clear();
+		// intList is now empty
+		```
+
+18. `void erase_after(const iterator pos)`
+    * Parameters: iterator pos
+    * Return value: None
+    * Complexity: constant
+    * Note: removes element just after pos
+    * examples
+		
+		```c++
+		forward_list<int> intList = {1,2,3,4,5};
+		intList.erase_after(intList.before_begin());
+		// intList is now {2,3,4,5};
+		```
