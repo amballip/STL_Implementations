@@ -15,6 +15,7 @@ struct node
 
 	~node()
 	{
+		std::cout<<"destroyed"<<std::endl;
 	}
 
 };
@@ -109,10 +110,12 @@ class forward_list
 		return iterator(nullptr);
 	}
 
-	iterator before_begin()
+	iterator before_begin() const
 	{
 		return iterator(beforeHead);
 	}
+
+
 
 
 
@@ -167,9 +170,24 @@ class forward_list
 		return const_iterator(nullptr);
 	}
 
-	const_iterator cbefore_begin()
+	const_iterator cbefore_begin() const
 	{
 		return const_iterator(beforeHead);
+	}
+
+	const_iterator before_begin()
+	{
+
+	}
+
+	const_iterator begin()
+	{
+
+	}
+
+	const_iterator end()
+	{
+
 	}
 	
 	
@@ -198,7 +216,7 @@ class forward_list
 
 	}
 
-	forward_list(size_t count,T elem = T())
+	forward_list(size_t count,const T& elem = T())
 	{
 		createHead(elem);
 		iterator it = begin();
@@ -212,7 +230,7 @@ class forward_list
 	}
 
 
-	explicit forward_list(const std::initializer_list<T>& initList)
+	forward_list(const std::initializer_list<T>& initList)
 	{
 		typename std::initializer_list<T>::iterator it= initList.begin();
 		createHead(*it);
@@ -254,7 +272,7 @@ class forward_list
 //******************************************** Member functions  *************************************************
 
 
-	void printList()
+	void printList() const
 	{
 		if(head==nullptr)
 		{
@@ -295,7 +313,7 @@ class forward_list
 
 	}
 
-	void insert_after(const iterator& it,T elem)
+	void insert_after(const iterator& it,const T& elem)
 	{
 		if(it==iterator(beforeHead) && head==nullptr)
 		{
@@ -319,7 +337,7 @@ class forward_list
 		}
 	}
 
-	void insert_after(const iterator& it,size_t n,T elem)
+	void insert_after(const iterator& it,size_t n,const T& elem)
 	{
 		forward_list<int>::iterator m_it = it;
 		while(n--)
@@ -344,17 +362,22 @@ class forward_list
 		
 	}
 
-	void assign(size_t count,T elem)
+	void insert_after(const iterator pos,std::initializer_list<T> initList)
+	{
+
+	}
+
+	void assign(size_t count,const T& elem)
 	{
 		*this = forward_list(count,elem);
 	}
 
-	void assign(const iterator& begin,const iterator& end)
+	void assign(iterator& begin, iterator& end)
 	{
 		*this = forward_list(begin,end);
 	}
 
-	void assign(const std::initializer_list<T> initList)
+	void assign(std::initializer_list<T> initList)
 	{
 		*this  = forward_list(initList);
 	}
@@ -491,12 +514,17 @@ class forward_list
 	}
 
 
-	bool empty()
+	bool empty() const
 	{
 		return head==nullptr;
 	}
 
 	T& front()
+	{
+		return this->head->m_value;
+	}
+
+	const T& front() const
 	{
 		return this->head->m_value;
 	}
